@@ -134,6 +134,7 @@
 // Effects
 #include "Effects/NormalMap/LeanMap.h"
 #include "Effects/Shadows/CSM.h"
+#include "Effects/Utils/BilateralBlur.h"
 #include "Effects/Utils/GaussianBlur.h"
 #include "Effects/SkyBox/SkyBox.h"
 #include "Effects/ToneMapping/ToneMapping.h"

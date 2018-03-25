@@ -41,14 +41,17 @@ public:
     void onGuiRender(SampleCallbacks* pSample, Gui* pGui) override;
 private:
     Texture::SharedPtr mpImage;
-    Fbo::SharedPtr mpTempFB;
+    Fbo::SharedPtr mpGaussianFB;
+    Fbo::SharedPtr mpBilateralFB;
 
     FullScreenPass::UniquePtr mpLuminance;
     GaussianBlur::UniquePtr mpGaussianBlur;
+    BilateralBlur::UniquePtr mpBilateralBlur;
     FullScreenPass::UniquePtr mpBlit;
     GraphicsVars::SharedPtr mpProgVars;
 
     bool mEnableGaussianBlur = false;
+    bool mEnableBilateralBlur = false;
     bool mEnableGrayscale = false;
     void loadImage(SampleCallbacks* pSample);
     void loadImageFromFile(SampleCallbacks* pSample, std::string filename);

@@ -33,18 +33,27 @@ void MultiPassPostProcess::onGuiRender(SampleCallbacks* pSample, Gui* pGui)
     {
         loadImage(pSample);
     }
+
     pGui->addCheckBox("Gaussian Blur", mEnableGaussianBlur);
     if(mEnableGaussianBlur)
     {
         mpGaussianBlur->renderUI(pGui, "Blur Settings");
-        pGui->addCheckBox("Grayscale", mEnableGrayscale);
     }
+
+    pGui->addCheckBox("Bilateral Blur", mEnableBilateralBlur);
+    if (mEnableBilateralBlur)
+    {
+        mpBilateralBlur->renderUI(pGui, "Bilateral Blur Settings");
+    }
+
+    pGui->addCheckBox("Grayscale", mEnableGrayscale);
 }
 
 void MultiPassPostProcess::onLoad(SampleCallbacks* pSample, RenderContext::SharedPtr pContext)
 {
     mpLuminance = FullScreenPass::create(appendShaderExtension("Luminance.ps"));
     mpGaussianBlur = GaussianBlur::create(5);
+    mpBilateralBlur = BilateralBlur::create(5);
     mpBlit = FullScreenPass::create(appendShaderExtension("Blit.ps"));
     mpProgVars = GraphicsVars::create(mpBlit->getProgram()->getActiveVersion()->getReflector());
 }
@@ -65,7 +74,8 @@ void MultiPassPostProcess::loadImageFromFile(SampleCallbacks* pSample, std::stri
 
     Fbo::Desc fboDesc;
     fboDesc.setColorTarget(0, mpImage->getFormat());
-    mpTempFB = FboHelper::create2D(mpImage->getWidth(), mpImage->getHeight(), fboDesc);
+    mpGaussianFB = FboHelper::create2D(mpImage->getWidth(), mpImage->getHeight(), fboDesc);
+    mpBilateralFB = FboHelper::create2D(mpImage->getWidth(), mpImage->getHeight(), fboDesc);
 
     pSample->resizeSwapChain(mpImage->getWidth(), mpImage->getHeight());
 }
@@ -82,18 +92,22 @@ void MultiPassPostProcess::onFrameRender(SampleCallbacks* pSample, RenderContext
 
         pContext->setGraphicsVars(mpProgVars);
 
+        mpProgVars->setTexture("gTexture", mpImage);
+
         if(mEnableGaussianBlur)
         {
-            mpGaussianBlur->execute(pContext.get(), mpImage, mpTempFB);
-            mpProgVars->setTexture("gTexture", mpTempFB->getColorTexture(0));
-            const FullScreenPass* pFinalPass = mEnableGrayscale ? mpLuminance.get() : mpBlit.get();
-            pFinalPass->execute(pContext.get());
+            mpGaussianBlur->execute(pContext.get(), mpImage, mpGaussianFB);
+            mpProgVars->setTexture("gTexture", mpGaussianFB->getColorTexture(0));
         }
-        else
+
+        if (mEnableBilateralBlur)
         {
-            mpProgVars->setTexture("gTexture", mpImage);
-            mpBlit->execute(pContext.get());
+            mpBilateralBlur->execute(pContext.get(), mpProgVars->getTexture("gTexture"), mpBilateralFB);
+            mpProgVars->setTexture("gTexture", mpBilateralFB->getColorTexture(0));
         }
+
+        const FullScreenPass* pFinalPass = mEnableGrayscale ? mpLuminance.get() : mpBlit.get();
+        pFinalPass->execute(pContext.get());
     }
 }
 
@@ -115,6 +129,15 @@ bool MultiPassPostProcess::onKeyEvent(SampleCallbacks* pSample, const KeyboardEv
             return true;
         case KeyboardEvent::Key::B:
             mEnableGaussianBlur = true;
+            mEnableBilateralBlur = false;
+            return true;
+        case KeyboardEvent::Key::N:
+            mEnableGaussianBlur = false;
+            mEnableBilateralBlur = true;
+            return true;
+        case KeyboardEvent::Key::M:
+            mEnableGaussianBlur = false;
+            mEnableBilateralBlur = false;
             return true;
         }
     }

@@ -487,6 +487,9 @@
     <ClCompile Include="Graphics\LightProbe.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Effects\Utils\BilateralBlur.cpp">
+      <Filter>Effects\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Model\Animation.h">
@@ -1597,6 +1600,9 @@
     <ClInclude Include="Utils\Renderer\MultiSampleRenderer.h">
       <Filter>Utils\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Effects\Utils\BilateralBlur.h">
+      <Filter>Effects\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Externals">
@@ -2230,6 +2236,9 @@
     </None>
     <None Include="Data\Framework\Shaders\LightProbeIntegration.ps.slang">
       <Filter>Data\Framework\Shaders</Filter>
+    </None>
+    <None Include="Data\Effects\BilateralBlur.ps.hlsl">
+      <Filter>Data\Effects</Filter>
     </None>
   </ItemGroup>
 </Project>

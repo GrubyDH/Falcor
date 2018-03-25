@@ -318,6 +318,7 @@
     <ClCompile Include="Effects\SkyBox\SkyBox.cpp" />
     <ClCompile Include="Effects\TAA\TAA.cpp" />
     <ClCompile Include="Effects\ToneMapping\ToneMapping.cpp" />
+    <ClCompile Include="Effects\Utils\BilateralBlur.cpp" />
     <ClCompile Include="Effects\Utils\GaussianBlur.cpp" />
     <ClCompile Include="Graphics\Camera\Camera.cpp" />
     <ClCompile Include="Graphics\Camera\CameraController.cpp" />
@@ -766,6 +767,7 @@
     <ClInclude Include="Effects\SkyBox\SkyBox.h" />
     <ClInclude Include="Effects\TAA\TAA.h" />
     <ClInclude Include="Effects\ToneMapping\ToneMapping.h" />
+    <ClInclude Include="Effects\Utils\BilateralBlur.h" />
     <ClInclude Include="Effects\Utils\GaussianBlur.h" />
     <ClInclude Include="Falcor.h" />
     <ClInclude Include="FalcorConfig.h" />
@@ -1044,6 +1046,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Effects\TAA.ps.slang">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\Effects\BilateralBlur.ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DebugD3D12|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='DebugVK|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='ReleaseD3D12|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='ReleaseVK|x64'">Pixel</ShaderType>
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
